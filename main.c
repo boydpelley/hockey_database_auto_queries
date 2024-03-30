@@ -1,5 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+char * get_team_name(char * buffer)
+{
+    char * name = NULL;
+    char * delim = " ";
+    char * token;
+    char * last_s = NULL;
+    char * temp;
+
+    token = strtok((char *)buffer, delim);
+
+    while (token != NULL)
+    {
+        if (token[strlen(token) - 1] == 's')
+        {
+            last_s = token;
+        }
+        token = strtok(NULL, delim);
+    }
+
+    if (last_s != NULL)
+    {
+        size_t length = last_s - buffer + strlen(last_s);
+
+        name = (char *)malloc(length + 1);
+
+        strncpy(name, buffer, length);
+        name[length] = '\0';
+    }
+
+    return name;
+}
+
+void print_line(char * order_types, FILE * input)
+{
+    char buffer[256];
+
+    while (fgets(buffer, sizeof(buffer), input))
+    {
+
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -26,6 +69,8 @@ int main(int argc, char* argv[])
         printf("Error with opening file.\n");
         return 1;
     }
+
+
 
 
 
