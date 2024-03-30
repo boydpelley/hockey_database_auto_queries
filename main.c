@@ -8,7 +8,6 @@ char * get_team_name(char * buffer)
     char * delim = " ";
     char * token;
     char * last_s = NULL;
-    char * temp;
 
     token = strtok((char *)buffer, delim);
 
@@ -34,12 +33,59 @@ char * get_team_name(char * buffer)
     return name;
 }
 
+char * get_player_name(char * buffer)
+{
+    char * name = NULL;
+    char * delim = " ";
+    char * token;
+    char * last_s = NULL;
+    char * temp;
+
+    token = strtok((char *)buffer, delim);
+
+    while (token != NULL)
+    {
+        if (token[strlen(token) - 1] == 's')
+        {
+            last_s = token;
+        }
+        token = strtok(NULL, delim);
+    }
+
+    if (last_s != NULL)
+    {
+        size_t s_index = last_s - buffer;
+
+        temp = strtok(last_s + 1, delim);
+
+        temp = strtok(NULL, delim);
+
+        if (temp != NULL)
+        {
+            name = (char *)malloc(strlen(temp) + 1);
+
+            strcpy(name, temp);
+
+            temp = strtok(NULL, delim);
+            if (temp != NULL)
+            {
+                strcat(name, " ");
+                strcat(name, temp);
+            }
+        }
+    }
+
+    return name;
+}
+
 void print_line(char * order_types, FILE * input)
 {
     char buffer[256];
 
     while (fgets(buffer, sizeof(buffer), input))
     {
+        char * team_name = get_team_name(buffer);
+
 
     }
 }
