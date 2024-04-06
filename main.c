@@ -1,28 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 #define MAX_LINE_LENGTH 1024
+// Function to check if a string is numeric
+bool isNumeric(const char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (!isdigit(str[i]) && str[i] != '.') {
+            return false;
+        }
+    }
+    return true;
+}
 
 void generateSQLInsert(const char *data[], int numColumns) {
     printf("(");
     for (int i = 0; i < numColumns; ++i) {
-        printf("'%s'", data[i]);
+        if (isNumeric(data[i])) {
+            printf("%s", data[i]);  // No quotes for numeric values
+        } else {
+            printf("'%s'", data[i]);
+        }
         if (i < numColumns - 1)
             printf(", ");
     }
     printf("),\n");
 }
 
-
 int main(int argc, char* argv[])
 {
-
     printf("How many values per row is there?\nPlease enter a positive number.\n");
     short num_vals_per_row = 0;
     while (num_vals_per_row < 1) {
         scanf("%hd", &num_vals_per_row);
     }
+    getchar(); // Consume the newline character left in the input buffer
 
     printf("\nWhat is the name of the database the data will be inserted into?\n");
     char database_name[50];
@@ -48,6 +62,13 @@ int main(int argc, char* argv[])
         int numColumns = 0;
         token = strtok(line, ",");
         while (token != NULL && numColumns < num_vals_per_row) {
+            // Remove leading and trailing whitespace
+            while (*token == ' ' || *token == '\t')
+                token++;
+            int len = strlen(token);
+            while (len > 0 && (token[len - 1] == '\n' || token[len - 1] == '\r'))
+                token[--len] = '\0';
+
             data[numColumns++] = token;
             token = strtok(NULL, ",");
         }
@@ -59,5 +80,4 @@ int main(int argc, char* argv[])
     }
     fclose(csvFile);
     return 0;
-
 }
