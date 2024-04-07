@@ -6,21 +6,28 @@
 
 #define MAX_LINE_LENGTH 1024
 // Function to check if a string is numeric
-bool isNumeric(const char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        if (!isdigit(str[i]) && str[i] != '.') {
+bool isNumeric(const char *str)
+{
+    for (int i = 0; str[i] != '\0'; i++)
+    {
+        if (!isdigit(str[i]) && str[i] != '.')
+        {
             return false;
         }
     }
     return true;
 }
 
-void generateSQLInsert(const char *data[], int numColumns) {
+void generateSQLInsert(const char *data[], int numColumns)
+{
     printf("(");
-    for (int i = 0; i < numColumns; ++i) {
-        if (isNumeric(data[i])) {
+    for (int i = 0; i < numColumns; ++i)
+    {
+        if (isNumeric(data[i]))
+        {
             printf("%s", data[i]);  // No quotes for numeric values
-        } else {
+        } else
+        {
             printf("'%s'", data[i]);
         }
         if (i < numColumns - 1)
@@ -33,7 +40,8 @@ int main(int argc, char* argv[])
 {
     printf("How many values per row is there?\nPlease enter a positive number.\n");
     short num_vals_per_row = 0;
-    while (num_vals_per_row < 1) {
+    while (num_vals_per_row < 1)
+    {
         scanf("%hd", &num_vals_per_row);
     }
     getchar(); // Consume the newline character left in the input buffer
@@ -52,16 +60,19 @@ int main(int argc, char* argv[])
 
     char line[MAX_LINE_LENGTH];
     int lineCount = 0;
-    printf("INSERT INTO defence (team_name, player_name, position, games_played, icetime_min, goals, "
-           "assists, first_assists, second_assists, points, shifts, expected_goals, shots_on_goal)\nVALUES\n");
-    while (fgets(line, sizeof(line), csvFile) && lineCount < 200) {
+    printf("INSERT INTO %s (", database_name);
+    printf(fgets(line, sizeof(line), csvFile));
+    printf(")");
+    while (fgets(line, sizeof(line), csvFile) && lineCount < 200)
+    {
         char *token;
-        const char *data[num_vals_per_row]; // Assuming maximum of 20 columns
+        const char *data[num_vals_per_row];
 
         // Parse CSV line
         int numColumns = 0;
         token = strtok(line, ",");
-        while (token != NULL && numColumns < num_vals_per_row) {
+        while (token != NULL && numColumns < num_vals_per_row)
+        {
             // Remove leading and trailing whitespace
             while (*token == ' ' || *token == '\t')
                 token++;
